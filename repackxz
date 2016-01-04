@@ -1,0 +1,36 @@
+#!/bin/bash
+
+oldfname=$1
+# replace .gz -> .xz
+newfname=${oldfname%.gz}.xz
+
+if [ ! -e $oldfname ]
+then
+	echo $oldfname does not exist
+	exit 1
+fi
+
+if [ -e $newfname ]
+then
+	echo $newfname already exists
+	exit 1
+fi
+
+gunzip -c $oldfname | xz > $newfname
+chown "`stat --printf '%u:%g' $oldfname`" $newfname
+chmod "`stat -c '%a' $oldfname`" $newfname
+touch -a -d "`stat -c '%x' $oldfname`" $newfname
+touch -m -d "`stat -c '%y' $oldfname`" $newfname
+
+oldfsize=$(du -b $oldfname | cut -f1)
+newfsize=$(du -b $newfname | cut -f1)
+smallestoldfsize=`bc <<< "scale=0; $oldfsize/2"`
+if [ $newfsize -lt $smallestoldfsize ]
+then
+	echo something went wrong
+	echo new file too small
+	du -h $newfname $oldfname
+	exit 2
+else
+	rm $oldfname
+fi
