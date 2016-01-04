@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# this takes a symlink and copies the linked file overwriting the link
+# so "ln -s a b; permanentlinkcopy b" is equal to "copy a b"
+
+link=$1
+if [[ -h $1 ]]; then
+	linkdest=$(readlink $1)
+	rm $link
+	cp -a $linkdest $link
+else
+	echo "$1 is not a link"
+fi
+
+
