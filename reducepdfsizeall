@@ -1,0 +1,12 @@
+#!/bin/bash
+if [ -n "$1" ]; then
+	cd $1
+fi
+
+for i in *.pdf
+do
+	mv "$i" "$i.big"
+	reducepdfsize "$i.big" "$i"
+	rm "$i.big"
+	echo "reduced size of $i"
+done
