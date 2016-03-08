@@ -11,6 +11,10 @@
 # - if exit code 2 and all lines contain "vanished" or exit code 0, all output is suppressed
 # - otherwise pass through the original output and exit code
 
+# usage:
+# ignore-return24.sh rsnapshot hourly 
+# or whatever arguemnt you'd like to use
+
 tmplog=`mktemp`
 "$@" >&${tmplog}
 status=$?
